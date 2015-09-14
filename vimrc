@@ -113,7 +113,9 @@ set showmode              " Show current mode
 set wildchar=<TAB>        " start wild expansion in the command line using <TAB>
 set wildmenu              " wild char completion menu
 set backspace=indent,eol,start
-
+set lines=36
+set columns=120
+winpos 600 0
 " ignore these files while expanding wild chars
 set wildignore=*.o,*.class,*.pyc
 
@@ -147,6 +149,10 @@ set softtabstop=4
 set shiftwidth=4
 set tabstop=4
 au FileType Makefile set noexpandtab
+au FileType text   set softtabstop=4
+au FileType text   set shiftwidth=4
+au FileType cobol    set shiftwidth=3
+au FileType cobol    set softtabstop=3
 "}
 
 "去掉左右邊的滾條
@@ -276,6 +282,18 @@ autocmd BufReadPost *
          \ endif
 autocmd FocusLost * silent! up " vim 窗口失去焦點時
 autocmd BufLeave * silent! up " vim buffer 切換時自動儲存
+" for
+au! BufRead,BufNewFile *.json set filetype=json
+
+augroup json_autocmd
+    autocmd!
+    autocmd FileType json set autoindent
+    autocmd FileType json set formatoptions=tcq2l
+    autocmd FileType json set textwidth=78 shiftwidth=2
+    autocmd FileType json set softtabstop=2 tabstop=8
+    autocmd FileType json set expandtab
+    autocmd FileType json set foldmethod=syntax
+augroup END
 "=============================================================================
 " Commands
 "=============================================================================
@@ -288,7 +306,8 @@ command! -nargs=* Wrap set wrap linebreak nolist " vimcasts.org #16
 let mapleader=","
 let g:mapleader=","
 
-ima ;; <esc>A;
+inoremap ;; <esc>A;
+noremap ;; <esc>A;
 " edit .vimrc or _vimrc
 nmap <leader>v :tabedit $MYVIMRC<CR>
 
@@ -396,6 +415,9 @@ nmap <C-S-P> :call <SID>SynStack()<CR>
 " Visually select the text that was last edited/pasted
 nmap gV `[v`]
 
+" save and load view
+map <leader>k :mkview<cr>
+map <leader>jk :loadview<cr>
 " wikia: Replace a word with yanked text
 xnoremap p "_dP
 nnoremap S diw"0P
@@ -411,29 +433,31 @@ nnoremap <S-Tab> :bprevious<CR>
 " Code Map
 "=============================================================================
 " --- ruby --- "
-imap <S-CR> <CR><CR>end<Esc>-cc
+inoremap <S-CR> <CR><CR>end<Esc>-cc
 
 inoremap jk <Esc><esc>
 "inoremap <Esc> <nop>
 
-imap l; <Esc>$a;<CR>
+inoremap l; <Esc>$a;<CR>
 inoremap ;; <Esc>A;<Esc>
 nnoremap ;; <Esc>A;<Esc>
 "imap jo <Esc>o
 "imap ko <Esc>ko<cr>
 imap =+ =>
 map <leader>yr :YRShow<cr>
-nmap <leader>l :set list!<cr>
+nnoremap <leader>l :set list!<cr>
 "nnoremap <leader>, <Esc>A,
 "inoremap <leader>, <Esc>A,
 
 
-nmap <c-s> :w<cr>
-imap <c-s> <esc>:w<cr>a
-imap <c-s> <esc><c-s>
+nnoremap <c-s> :w<cr>
+inomap <c-s> <esc>:w<cr>a
+inomap <c-s> <esc><c-s>
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 "map <space> /
 map <c-space> ?
+" shift-enter, insert to next line
+inoremap <S-CR> <Esc>o
 
 "=============================================================================
 " Useful Map
@@ -510,6 +534,9 @@ function! AutoFormatFile()
    call cursor(l,c)
 endfunction
 
+fun! SpaceToOne()
+    %s/\s\+/ /g
+endfun
 " --- Encoding Settings --- "
 fun! ViewUTF8()
    set encoding=utf-8
@@ -545,6 +572,23 @@ function! s:align()
     call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
   endif
 endfunction
+fun! ToCSV()
+    %s/\s\+/,/g
+    let s=expand('%:t') . ".csv"
+endfun
+
+fun! ToTmp()
+    let path='G:\tempto234\'
+    let f=expand('%:r')
+    let fname=matchstr(f,'_.*$')
+    echo 'w ' . path . f
+    execute 'w! '.path . f
+endfun
+fun! SQLUpper()
+    "exec "normal! %s/select/SELECT/g"
+    :normal! %s/select/SELECT/g
+endfun
+map <F3> :call ToTmp()<CR>
 "=============================================================================
 " Plugin Settings
 "=============================================================================
@@ -636,6 +680,8 @@ let g:airline#extensions#tabline#left_sep = '>>'
 let g:airline#extensions#tabline#left_alt_sep = '|'
 
 
+" --- YankRing --- "
+let g:yankring_max_element_length = 0
 
 "=============================================================================
 " Redundant
@@ -662,5 +708,3 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 "autocmd FileType ruby compiler ruby
 ""
 let g:dbext_default_profile_mySQL = 'type=MYSQL:user=root:passwd=whatever:dbname=mysql'
-
-
