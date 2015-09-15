@@ -451,8 +451,8 @@ nnoremap <leader>l :set list!<cr>
 
 
 nnoremap <c-s> :w<cr>
-inomap <c-s> <esc>:w<cr>a
-inomap <c-s> <esc><c-s>
+inoremap <c-s> <esc>:w<cr>a
+inoremap <c-s> <esc><c-s>
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 "map <space> /
 map <c-space> ?
@@ -708,3 +708,4 @@ let g:yankring_max_element_length = 0
 "autocmd FileType ruby compiler ruby
 ""
 let g:dbext_default_profile_mySQL = 'type=MYSQL:user=root:passwd=whatever:dbname=mysql'
+" test
