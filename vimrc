@@ -16,13 +16,24 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+"http://erikzaadi.com/2012/03/19/auto-installing-vundle-from-your-vimrc/
+let iCanHazVundle=1
+let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
+if !filereadable(vundle_readme)
+    echo "Installing Vundle.."
+    echo ""
+    silent !mkdir -p ~/.vim/bundle
+    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+    let iCanHazVundle=0
+endif
+
 " set the runtime path to include Vundle and initialize
 if has("gui_win32")
-   set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
-   call vundle#begin('$VIM/vimfiles/bundle')
+    set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
+    call vundle#begin('$VIM/vimfiles/bundle')
 else
-   set rtp+=~/.vim/bundle/Vundle.vim/
-   call vundle#begin()
+    set rtp+=~/.vim/bundle/Vundle.vim/
+    call vundle#begin()
 endif
 
 "=============================================================================
@@ -103,7 +114,7 @@ filetype plugin indent on    " required
 syntax on                 " syntax highlight
 
 set bs=2                  " allow backspacing over everything in insert mode
-set history=50            " keep 50 lines of command line history
+set history=1000          " keep 50 lines of command line history
 set ruler                 " show the cursor position all the time
 set autoread              " auto read when file is changed from outside
 set number
@@ -143,6 +154,24 @@ set tm=500
 set lbr
 set tw=500
 
+" cursorline & colors
+set t_Co=256
+set cursorline
+set background=dark
+" set background=light
+colors molokai
+" colors solarized
+"  colors vgod
+" cterm 終端 ctermbg 背景顏色 ctermfg 文字顏色
+hi CursorLine   cterm=NONE ctermbg=Brown  guibg=DarkMagenta
+"hi CursorLine   cterm=NONE ctermbg=DarkGreen ctermfg=white guibg=DarkMagenta
+hi CursorColumn cterm=NONE ctermbg=DarkMagenta  guibg=DarkMagenta
+hi CursorLineNr ctermfg=Yellow cterm=bold gui=bold guifg=Yellow
+hi Visual cterm=NONE ctermbg=DarkMagenta guibg=DarkMagenta
+
+" dark, [DarkRed/DarkBlue/Brown/Black
+" highlight Pmenu ctermbg=brown ctermfg=white colors=yellow
+
 " TAB setting{
 set expandtab                "replace <TAB> with spaces
 set softtabstop=4
@@ -163,53 +192,36 @@ au FileType cobol    set softtabstop=3
 " status line {
 set laststatus=2
 if !has("gui_running")
-   "set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
-   "set statusline+=\ \ \ [%{&ff}/%Y]
-   "set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
-   "set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+    "set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
+    "set statusline+=\ \ \ [%{&ff}/%Y]
+    "set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
+    "set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
 endif
 
-" color & font Settings
+" guifont Settings
 if has("gui_running")
-   if has("gui_win32")
-      set guifont=Consolas:h13
-      "set guifont=Monospace:h13
-   else
-      set guifont=Monaco\ 14
-   endif
-   set background=dark
-   "set background=light
-   "set t_Co=256
-   set cursorline
-   colors molokai
-   "colors solarized
-   "colors vgod
-   "highlight CrusorLine guibg=#003853 ctermbg=24 gui=none cterm=none
-   hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=DarkMagenta
-   hi CursorColumn cterm=NONE ctermbg=darkred  ctermfg=white guibg=DarkMagenta
-   hi CursorLineNr   term=bold ctermfg=Yellow gui=bold guifg=Yellow
-   hi Visual cterm=NONE ctermbg=darkred ctermfg=white guibg=DarkMagenta
-   " dark, [DarkRed/DarkBlue/Brown/Black
-   highlight Pmenu ctermbg=lightblue ctermfg=white
-else
-   color vgod
-   highlight Pmenu ctermbg=lightblue ctermfg=white
+    if has("gui_win32")
+        set guifont=Consolas:h13
+        "set guifont=Monospace:h13
+    else
+        set guifont=Monaco\ 13
+    endif
 end
 
 nnoremap <Leader>c :set cursorline! cursorcolumn!<CR>
 " use syntax complete if nothing else available
 if has("autocmd") && exists("+omnifunc")
-   autocmd Filetype *
-            \ if &omnifunc == "" |
-            \ setlocal omnifunc=syntaxcomplete#Complete |
-            \ endif
+    autocmd Filetype *
+                \ if &omnifunc == "" |
+                \ setlocal omnifunc=syntaxcomplete#Complete |
+                \ endif
 endif
 set cot-=preview "disable doc preview in omnicomplete
 
 " encoding
 if !has("gui_win32")
-   set encoding=utf-8
-   set termencoding=utf-8
+    set encoding=utf-8
+    set termencoding=utf-8
 endif
 
 set termencoding=utf-8
@@ -230,9 +242,9 @@ source $VIMRUNTIME/menu.vim
 "Restore cursor to file position in previous editing session
 "http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
 if has("gui_win32")
-   set viminfo='10,\"100,:20,%,n$VIM\\.viminfo
+    set viminfo='10,\"100,:20,%,n$VIM\\.viminfo
 else
-   set viminfo='10,\"100,:20,%,n~/.viminfo
+    set viminfo='10,\"100,:20,%,n~/.viminfo
 endif
 
 " Disable all blinking:
@@ -252,9 +264,9 @@ autocmd FileType * set colorcolumn=80
 
 " auto reload vimrc when editing it
 if has("gui_win32")
-   autocmd! bufwritepost _vimrc source $MYVIMRC
+    autocmd! bufwritepost _vimrc source $MYVIMRC
 else
-   autocmd! bufwritepost .vimrc source ~/.vimrc
+    autocmd! bufwritepost .vimrc source ~/.vimrc
 endif
 
 " Enable omni completion. (Ctrl-X Ctrl-O)
@@ -277,9 +289,9 @@ autocmd BufNewFile,BufRead *.html setlocal nowrap
 
 " Restore cursor position
 autocmd BufReadPost *
-         \ if line("'\"") > 1 && line("'\"") <= line("$") |
-         \   exe "normal! g`\"" |
-         \ endif
+            \ if line("'\"") > 1 && line("'\"") <= line("$") |
+            \   exe "normal! g`\"" |
+            \ endif
 autocmd FocusLost * silent! up " vim 窗口失去焦點時
 autocmd BufLeave * silent! up " vim buffer 切換時自動儲存
 " for
@@ -441,6 +453,7 @@ inoremap jk <Esc><esc>
 inoremap l; <Esc>$a;<CR>
 inoremap ;; <Esc>A;<Esc>
 nnoremap ;; <Esc>A;<Esc>
+" noremap ;; <Esc>A;<Esc>
 "imap jo <Esc>o
 "imap ko <Esc>ko<cr>
 imap =+ =>
@@ -471,67 +484,67 @@ nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
 "=============================================================================
 " Show syntax highlighting groups for word under cursor
 function! ClearRegisters()
-   " let regs='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-"' | let i=0 | while (i<strlen(regs)) | exec 'let @'.regs[i].'=""' | let i=i+1 | endwhile | unlet regs
-   redir => l:register_out
-   silent register
-   redir end
-   let l:register_list = split(l:register_out, '\n')
-   call remove(l:register_list, 0) " remove header (-- Registers --)
-   call map(l:register_list, "substitute(v:val, '^.\\(.\\).*', '\\1', '')")
-   call filter(l:register_list, 'v:val !~ "[%#=.:]"') " skip readonly registers
-   for elem in l:register_list
-      execute 'let @'.elem.'= ""'
-   endfor
+    " let regs='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-"' | let i=0 | while (i<strlen(regs)) | exec 'let @'.regs[i].'=""' | let i=i+1 | endwhile | unlet regs
+    redir => l:register_out
+    silent register
+    redir end
+    let l:register_list = split(l:register_out, '\n')
+    call remove(l:register_list, 0) " remove header (-- Registers --)
+    call map(l:register_list, "substitute(v:val, '^.\\(.\\).*', '\\1', '')")
+    call filter(l:register_list, 'v:val !~ "[%#=.:]"') " skip readonly registers
+    for elem in l:register_list
+        execute 'let @'.elem.'= ""'
+    endfor
 endfunction
 function! <SID>SynStack()
-   if !exists("*synstack")
-      return
-   endif
-   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 function! CurDir()
-   let curdir = substitute(getcwd(), $HOME, "~", "")
-   return curdir
+    let curdir = substitute(getcwd(), $HOME, "~", "")
+    return curdir
 endfunction
 
 function! HasPaste()
-   if &paste
-      return '[PASTE]'
-   else
-      return ''
-   endif
+    if &paste
+        return '[PASTE]'
+    else
+        return ''
+    endif
 endfunction
 
 " 去除多個空白
 function! DelWhite()
-   :%s/\s\+/ /g
-   :%s/^\s\+//g
+    :%s/\s\+/ /g
+    :%s/^\s\+//g
 endfun
 
 function! StripTrailingWhitespaces()
-   let _s = @/
-   let l = line(".")
-   let c = col(".")
-   %s/\s\+$//e
-   let @/=_s
-   call cursor(l,c)
+    let _s = @/
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    let @/=_s
+    call cursor(l,c)
 endfu
 
 function! AutoFormatFile()
-   let l = line(".")
-   let c = col(".")
-   " Don't format txt filetype
-   if &ft =~ 'text'
-      return
-   endif
-   if &ft =~ 'cobol'
-      return
-   endif
-   if &ft =~ 'vim'
-      return
-   endif
-   :normal gg=G
-   call cursor(l,c)
+    let l = line(".")
+    let c = col(".")
+    " Don't format txt filetype
+    if &ft =~ 'text'
+        return
+    endif
+    if &ft =~ 'cobol'
+        return
+    endif
+    if &ft =~ 'vim'
+        return
+    endif
+    :normal gg=G
+    call cursor(l,c)
 endfunction
 
 fun! SpaceToOne()
@@ -539,38 +552,38 @@ fun! SpaceToOne()
 endfun
 " --- Encoding Settings --- "
 fun! ViewUTF8()
-   set encoding=utf-8
-   set termencoding=big5
+    set encoding=utf-8
+    set termencoding=big5
 endfun
 
 fun! UTF8()
-   set encoding=utf-8
-   set termencoding=big5
-   set fileencoding=utf-8
-   set fileencodings=ucs-bom,big5,utf-8,latin1
+    set encoding=utf-8
+    set termencoding=big5
+    set fileencoding=utf-8
+    set fileencodings=ucs-bom,big5,utf-8,latin1
 endfun
 
 fun! Big5()
-   set encoding=big5
-   set fileencoding=big5
+    set encoding=big5
+    set fileencoding=big5
 endfun
 
 fun! GetSeq(num)
-   :normal ggi1
-   :normal Yp<c-a>
+    :normal ggi1
+    :normal Yp<c-a>
 endfun
 
 " http://vimcasts.org/episodes/aligning-text-with-tabular-vim/
 inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
 function! s:align()
-  let p = '^\s*|\s.*\s|\s*$'
-  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-    Tabularize/|/l1
-    normal! 0
-    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-  endif
+    let p = '^\s*|\s.*\s|\s*$'
+    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        Tabularize/|/l1
+        normal! 0
+        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+    endif
 endfunction
 fun! ToCSV()
     %s/\s\+/,/g
@@ -610,7 +623,7 @@ nnoremap <silent> <F8> :TagbarToggle<CR>
 " set focus to TagBar when opening it
 let g:tagbar_autofocus = 1
 if has("gui_win32")
-   let g:tagbar_ctags_bin="c:/ctags.exe"
+    let g:tagbar_ctags_bin="c:/ctags.exe"
 endif
 
 " ---  Ctrlp --- "
@@ -618,9 +631,9 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 
 let g:ctrlp_custom_ignore = {
-         \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-         \ 'file': '\v\.(exe|so|dll)$',
-         \ }
+            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ }
 
 let g:ctrlp_cmd='CtrlPBuffer' "use <C-f> to change
 
