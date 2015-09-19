@@ -16,31 +16,27 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
-"http://erikzaadi.com/2012/03/19/auto-installing-vundle-from-your-vimrc/
-let iCanHazVundle=1
-let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
-if !filereadable(vundle_readme)
-    echo "Installing Vundle.."
-    echo ""
-    silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/Vundle.vim
-    let iCanHazVundle=0
-endif
-
 " set the runtime path to include Vundle and initialize
 if has("gui_win32")
     set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
     call vundle#begin('$VIM/vimfiles/bundle')
 else
+    "http://erikzaadi.com/2012/03/19/auto-installing-vundle-from-your-vimrc/
+    let iCanHazVundle=1
+    let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
+    if !filereadable(vundle_readme)
+        echo "Installing Vundle.."
+        echo ""
+        silent !mkdir -p ~/.vim/bundle
+        silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/Vundle.vim
+        let iCanHazVundle=0
+    endif
     set rtp+=~/.vim/bundle/Vundle.vim/
     call vundle#begin()
 endif
 
 "=============================================================================
 " Vundle Plugins
-" %s/Plugin '//g
-" %s/'//g
-" %s/\w\+\-\{0,1}\w+\///g
 "=============================================================================
 " --- for Windows gvim --- "
 Plugin 'gmarik/Vundle.vim'
