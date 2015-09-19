@@ -197,7 +197,7 @@ endif
 " guifont Settings
 if has("gui_running")
     if has("gui_win32")
-        set guifont=Consolas:h13
+        set guifont=Consolas:h12
         "set guifont=Monospace:h13
     else
         set guifont=Monaco\ 13
@@ -260,7 +260,7 @@ autocmd FileType * set colorcolumn=80
 
 " auto reload vimrc when editing it
 if has("gui_win32")
-    autocmd! bufwritepost _vimrc source $MYVIMRC
+    autocmd! bufwritepost vimrc source $VIM/vimrc
 else
     autocmd! bufwritepost .vimrc source ~/.vimrc
 endif
@@ -317,7 +317,7 @@ let g:mapleader=","
 inoremap ;; <esc>A;
 noremap ;; <esc>A;
 " edit .vimrc or _vimrc
-nmap <leader>v :tabedit $MYVIMRC<CR>
+nmap <leader>v :tabedit $VIM/vimrc<CR>
 
 "replace the current word in all opened buffers
 map <leader>r :call Replace()<CR>
