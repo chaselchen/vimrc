@@ -122,7 +122,7 @@ set wildmenu              " wild char completion menu
 set backspace=indent,eol,start
 set lines=36
 set columns=120
-winpos 600 0
+winpos 200 0
 " ignore these files while expanding wild chars
 set wildignore=*.o,*.class,*.pyc
 
