@@ -317,7 +317,11 @@ let g:mapleader=","
 inoremap ;; <esc>A;
 noremap ;; <esc>A;
 " edit .vimrc or _vimrc
-nmap <leader>v :tabedit $VIM/vimrc<CR>
+if has("gui_win32")
+    nmap <leader>v :tabedit $VIM/vimrc<CR>
+els
+    nmap <leader>v :tabedit $MYVIMRC<CR>
+end
 
 "replace the current word in all opened buffers
 map <leader>r :call Replace()<CR>
