@@ -44,9 +44,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'easymotion/vim-easymotion' " easymotion.txt
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'Twinside/vim-cuteErrorMarker'
-Plugin 'bling/vim-airline' ":h airline 不用詳讀
+Plugin 'bling/vim-airline' ":h airline
 Plugin 'godlygeek/tabular'
-" todo 讀到這裡
+" todo here
 Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'mattn/emmet-vim' "web 開發工具, <c-y>,
@@ -72,6 +72,7 @@ Plugin 'dkprice/vim-easygrep'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'nelstrom/vim-visual-star-search'
 Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-fugitive'
 Plugin 'c9s/gsession.vim'
 Plugin 'Yggdroot/indentLine'
 Plugin 'altercation/vim-colors-solarized'
@@ -120,8 +121,8 @@ set showmode              " Show current mode
 set wildchar=<TAB>        " start wild expansion in the command line using <TAB>
 set wildmenu              " wild char completion menu
 set backspace=indent,eol,start
-set lines=36
-set columns=120
+"set lines=50              " vim size
+"set columns=160           " vim size
 winpos 200 0
 " ignore these files while expanding wild chars
 set wildignore=*.o,*.class,*.pyc
@@ -159,7 +160,7 @@ colors molokai
 " colors solarized
 "  colors vgod
 " cterm 終端 ctermbg 背景顏色 ctermfg 文字顏色
-hi CursorLine   cterm=NONE ctermbg=Brown  guibg=DarkMagenta
+hi CursorLine   cterm=NONE ctermbg=brown guibg=DarkMagenta
 "hi CursorLine   cterm=NONE ctermbg=DarkGreen ctermfg=white guibg=DarkMagenta
 hi CursorColumn cterm=NONE ctermbg=DarkMagenta  guibg=DarkMagenta
 hi CursorLineNr ctermfg=Yellow cterm=bold gui=bold guifg=Yellow
@@ -441,6 +442,13 @@ vnoremap <F5> "+p
 
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
+
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
 "=============================================================================
 " Code Map
 "=============================================================================
