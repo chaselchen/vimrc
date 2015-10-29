@@ -767,6 +767,7 @@ fun! Replace()
     :exe 'bufdo! %s/\<' . expand('<cword>') . '\>/' . s:word . '/ge'
     :unlet! s:word
 endfun
+
 nmap <leader>y :call GetDsn()<CR>
 nmap <leader>t :call ReplaceDsn()<CR>
 fun! GetDsn()
@@ -786,7 +787,9 @@ fun! ReplaceDsn()
         echo dsn[1]
         let @l=dsn[1]
         let @/=escape(dsn[1], '.')
-        :s//\=@k
+        :s//\=@k " strang
     endif
+    ":s/\=@l/\=@k fail
+    ":s/<c-r>l/<c-r>k fail
 endfun
 
