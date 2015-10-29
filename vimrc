@@ -83,6 +83,8 @@ Plugin 'vim-scripts/dbext.vim'
 "Plugin 'ervandew/supertab'
 Plugin 'tomasr/molokai'
 Plugin 'OmniSharp/omnisharp-vim'
+Plugin 'tpope/vim-repeat'
+Plugin 'kana/vim-textobj-user'
 
 
 " --- for Linux --- "
@@ -120,6 +122,7 @@ set showmatch             " Cursor shows matching ) and }
 set showmode              " Show current mode
 set wildchar=<TAB>        " start wild expansion in the command line using <TAB>
 set wildmenu              " wild char completion menu
+"set wildmode=longest,list
 set backspace=indent,eol,start
 "set lines=50              " vim size
 "set columns=160           " vim size
@@ -201,7 +204,7 @@ if has("gui_running")
         set guifont=Consolas:h12
         "set guifont=Monospace:h13
     else
-        set guifont=Monaco\ 13
+        set guifont=Monaco\ 12
     endif
 end
 
@@ -396,7 +399,7 @@ noremap  <C-u>5 yypVr^
 inoremap <C-u>5 <esc>yypVr^A
 "}
 
-" Mappings to move lines
+" Mappings to move lines, wikia tip 646
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
 inoremap <A-j> <Esc>:m .+1<CR>==gi
@@ -433,8 +436,8 @@ map <leader>k :mkview<cr>
 map <leader>jk :loadview<cr>
 " wikia: Replace a word with yanked text
 xnoremap p "_dP
-nnoremap S diw"0P
-vnoremap S "_d"0P
+nnoremap <leader>s diw"0P
+vnoremap <leader>s "_d"0P
 nnoremap <F4> "+yiw
 vnoremap <F4> "+y
 nnoremap <F5> viw"+p
@@ -449,6 +452,19 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
+
+" practical vim Tip 41, get current file path
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+" %s//\=@0/? <CR>, from practical vim tip 91
+noremap <leader>a "ayiw
+noremap <leader>b <esc>:<c-u>%s//\=@a/
+
+" practical vim tip 92:w
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
+
 "=============================================================================
 " Code Map
 "=============================================================================
@@ -480,6 +496,8 @@ map <c-space> ?
 " shift-enter, insert to next line
 inoremap <S-CR> <Esc>o
 
+" macro back into reg x
+nnoremap <leader>x "xy$dd
 "=============================================================================
 " Useful Map
 "=============================================================================
@@ -730,3 +748,45 @@ let g:yankring_max_element_length = 0
 ""
 let g:dbext_default_profile_mySQL = 'type=MYSQL:user=root:passwd=whatever:dbname=mysql'
 " test
+call textobj#user#plugin('datetime', {
+            \   'date': {
+            \     'pattern': '\<\d\d\d\d-\d\d-\d\d\>',
+            \     'select': ['ad', 'id'],
+            \ },
+            \   'time': {
+            \     'pattern': '\<\d\d:\d\d:\d\d\>',
+            \     'select': ['at', 'it'],
+            \ },
+            \ })
+
+"---------------------------------------------------------------------------
+" Tip #382: Search for <cword> and replace with input() in all open buffers
+"---------------------------------------------------------------------------
+fun! Replace()
+    let s:word = input("Replace " . expand('<cword>') . " with:")
+    :exe 'bufdo! %s/\<' . expand('<cword>') . '\>/' . s:word . '/ge'
+    :unlet! s:word
+endfun
+nmap <leader>y :call GetDsn()<CR>
+nmap <leader>t :call ReplaceDsn()<CR>
+fun! GetDsn()
+    let s=getline('.')
+    let dsn=matchlist(s,'\vDSN\=([^\s]*)')
+    if !empty(dsn)
+        echo dsn[1]
+        let @k=dsn[1]
+    endif
+
+endfun
+
+fun! ReplaceDsn()
+    let s=getline('.')
+    let dsn=matchlist(s,'\vDSN\=([^\s]*)')
+    if !empty(dsn)
+        echo dsn[1]
+        let @l=dsn[1]
+        let @/=escape(dsn[1], '.')
+        :s//\=@k
+    endif
+endfun
+
